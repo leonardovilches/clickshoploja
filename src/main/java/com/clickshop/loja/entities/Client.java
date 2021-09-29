@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class ClienteEntity implements Serializable{
+public class Client implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -24,15 +24,16 @@ public class ClienteEntity implements Serializable{
 	@Column(unique=true, nullable=false)
 	private String instaUsername;
 	
+	@Column(unique=true, nullable=false)
 	private String email;
 	
 	private String phoneNumber;
 	
-	public ClienteEntity() {
+	public Client() {
 		 
 	}
 
-	public ClienteEntity(Integer id, String name, String instaUsername, String email, String phoneNumber) {
+	public Client(Integer id, String name, String instaUsername, String email, String phoneNumber) {
 		super();
 		this.id = id;
 		this.name = name;
