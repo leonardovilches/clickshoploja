@@ -1,6 +1,8 @@
 package com.clickshop.loja.resources;
 
+
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +13,9 @@ public class ClientResource {
 	
 	private Integer id;
 	private String name;
+	@NotEmpty(message = "Usuario deve ser Registrado")
 	private String instaUsername;
-	@Email(message = "Usuario Já registrado")
+	@Email(message = "Email Invalido")
 	private String email;
 	private String phoneNumber;
 	
