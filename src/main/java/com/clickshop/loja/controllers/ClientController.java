@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clickshop.loja.entities.Client;
 import com.clickshop.loja.resources.ClientResource;
+import com.clickshop.loja.resources.phoneNumberResource;
 import com.clickshop.loja.services.ClientService;
 import com.clickshop.loja.utils.Paginator;
 import com.google.gson.Gson;
@@ -124,4 +125,35 @@ public class ClientController {
 		
 		return ResponseEntity.ok().body(cliUpdated);
 	}
+	
+	///Phone Number
+	
+	@ApiOperation(value = "Create Phone Number")
+	@PostMapping(value = "/{idClient}/telefones")
+	public ResponseEntity<Client> createPhoneNumber(@PathVariable Integer idClient, @Valid @RequestBody phoneNumberResource phoneNumber) {
+		
+		Client cliUpdated = clientService.createPhoneNumber(idClient, phoneNumber);
+		return ResponseEntity.ok().body(cliUpdated);
+		
+	}
+	
+	
+	@ApiOperation(value = "Update Phone Number by Number")
+	@PutMapping(value = "/{idClient}/telefones/{currentNumber}")
+	public ResponseEntity<Client> updatePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber, @Valid @RequestBody phoneNumberResource phoneNumber) {
+		
+		Client cliUpdated = clientService.updatePhoneNumber(idClient, phoneNumber, currentNumber);
+		return ResponseEntity.ok().body(cliUpdated);
+		
+	}
+	
+	@ApiOperation(value = "Delete Phone Number by Number")
+	@DeleteMapping(value = "/{idClient}/telefones/{currentNumber}")
+	public ResponseEntity<String> deletePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber) {
+		
+		clientService.deletePhoneNumber(idClient, currentNumber);
+		
+		return ResponseEntity.ok(gson.toJson("Numero Deletado"));
+	}
+	
 }

@@ -3,6 +3,8 @@ package com.clickshop.loja.resources;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,8 @@ public class ClientResource {
 	private String instaUsername;
 	@Email(message = "Email Invalido")
 	private String email;
+	@Pattern(regexp = "[\\s]*[0-9]*[1-9]+", message="Formato do numero incorreto")
+	@Size(min = 10, max = 12)
 	private String phoneNumber;
 	
 	public ClientResource(Integer id, String name, String instaUsername, String email, String phoneNumber) {

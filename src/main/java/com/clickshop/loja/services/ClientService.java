@@ -2,6 +2,7 @@ package com.clickshop.loja.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.clickshop.loja.entities.Client;
 import com.clickshop.loja.repositories.ClientRepository;
 import com.clickshop.loja.resources.ClientResource;
+import com.clickshop.loja.resources.phoneNumberResource;
 import com.clickshop.loja.services.exceptions.ObjectAlreadyRegistered;
 import com.clickshop.loja.services.exceptions.ObjectNotFoundException;
 import com.clickshop.loja.utils.Paginator;
@@ -75,6 +77,60 @@ public class ClientService {
 		
 		return new Client(cliResou.getId(), cliResou.getName(), cliResou.getInstaUsername(), cliResou.getEmail(),
 				cliResou.getPhoneNumber());
+	}
+	
+	public Client createPhoneNumber(Integer id, phoneNumberResource phoneNumber) {
+		
+		Client cliEnt = findById(id);
+		Set<String> numbers = cliEnt.getPhoneNumbers();
+		
+		if(!numbers.contains(phoneNumber.getNewPhoneNumber())) {
+
+			numbers.add(phoneNumber.getNewPhoneNumber());
+			cliEnt.setPhoneNumbers(numbers);
+			update(cliEnt);
+		}
+		else {
+			throw new ObjectNotFoundException(
+					"Número já registrado! numero: " + phoneNumber.getNewPhoneNumber() + "; Tipo: " + Client.class.getName());
+		}	
+		return cliEnt;	
+	}
+	
+	public Client updatePhoneNumber(Integer id, phoneNumberResource phoneNumber, String currentNumber) {
+		
+		Client cliEnt = findById(id);
+		Set<String> numbers = cliEnt.getPhoneNumbers();
+		
+		if(numbers.contains(currentNumber)) {
+			numbers.remove(currentNumber);
+			numbers.add(phoneNumber.getNewPhoneNumber());
+	
+			cliEnt.setPhoneNumbers(numbers);
+			update(cliEnt);
+		}
+		else {
+			throw new ObjectNotFoundException(
+					"Número não encontrado! numero: " + currentNumber + "; Tipo: " + Client.class.getName());
+		}	
+		return cliEnt;	
+	}
+	
+	public void deletePhoneNumber(Integer id, String currentNumber) {
+		
+		Client cliEnt = findById(id);
+		Set<String> numbers = cliEnt.getPhoneNumbers();
+		
+		if(numbers.contains(currentNumber)) {
+			numbers.remove(currentNumber);
+	
+			cliEnt.setPhoneNumbers(numbers);
+			update(cliEnt);
+		}
+		else {
+			throw new ObjectNotFoundException(
+					"Número não encontrado! numero: " + currentNumber + "; Tipo: " + Client.class.getName());
+		}	
 	}
 
 }
