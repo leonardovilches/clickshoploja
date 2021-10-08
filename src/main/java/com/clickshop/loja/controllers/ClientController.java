@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
+import com.clickshop.loja.resources.AddressResource;
 import com.clickshop.loja.resources.ClientResource;
-import com.clickshop.loja.resources.phoneNumberResource;
+import com.clickshop.loja.resources.PhoneNumberResource;
+import com.clickshop.loja.services.AddressService;
 import com.clickshop.loja.services.ClientService;
+import com.clickshop.loja.services.PhoneNumberService;
 import com.clickshop.loja.utils.Paginator;
 import com.google.gson.Gson;
 
@@ -39,6 +43,12 @@ public class ClientController {
 	@Autowired
 	private ClientService clientService;
 
+	@Autowired
+	private AddressService addressService;
+	
+	@Autowired
+	private PhoneNumberService phoneNumberService;
+	
 	@ApiOperation(value = "Create a New Client")
 	@PostMapping
 	public ResponseEntity<Void> create(@Valid @RequestBody ClientResource cliReq) {
@@ -130,9 +140,9 @@ public class ClientController {
 	
 	@ApiOperation(value = "Create Phone Number")
 	@PostMapping(value = "/{idClient}/telefones")
-	public ResponseEntity<Client> createPhoneNumber(@PathVariable Integer idClient, @Valid @RequestBody phoneNumberResource phoneNumber) {
+	public ResponseEntity<Client> createPhoneNumber(@PathVariable Integer idClient, @Valid @RequestBody PhoneNumberResource phoneNumber) {
 		
-		Client cliUpdated = clientService.createPhoneNumber(idClient, phoneNumber);
+		Client cliUpdated = phoneNumberService.create(idClient, phoneNumber);
 		return ResponseEntity.ok().body(cliUpdated);
 		
 	}
@@ -140,9 +150,9 @@ public class ClientController {
 	
 	@ApiOperation(value = "Update Phone Number by Number")
 	@PutMapping(value = "/{idClient}/telefones/{currentNumber}")
-	public ResponseEntity<Client> updatePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber, @Valid @RequestBody phoneNumberResource phoneNumber) {
+	public ResponseEntity<Client> updatePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber, @Valid @RequestBody PhoneNumberResource phoneNumber) {
 		
-		Client cliUpdated = clientService.updatePhoneNumber(idClient, phoneNumber, currentNumber);
+		Client cliUpdated = phoneNumberService.update(idClient, phoneNumber, currentNumber);
 		return ResponseEntity.ok().body(cliUpdated);
 		
 	}
@@ -151,9 +161,58 @@ public class ClientController {
 	@DeleteMapping(value = "/{idClient}/telefones/{currentNumber}")
 	public ResponseEntity<String> deletePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber) {
 		
-		clientService.deletePhoneNumber(idClient, currentNumber);
+		phoneNumberService.delete(idClient, currentNumber);
 		
 		return ResponseEntity.ok(gson.toJson("Numero Deletado"));
+	}
+	
+	///Address
+	
+	@ApiOperation(value = "Create a New Address")
+	@PostMapping(value = "/{idClient}/endereco")
+	public ResponseEntity<Void> createAddress(@PathVariable Integer idClient, @Valid @RequestBody AddressResource addrReq) {
+
+		log.info("--> Starting / Create Address Controller");
+
+		Client cli = clientService.findById(idClient);
+		Address addrEnt = addressService.fromResourceCreate(addrReq, cli);
+		addressService.create(addrEnt);
+
+		log.info("--> Returning / Create Address Controller");
+
+		return ResponseEntity.ok().build();
+	}
+	
+	@ApiOperation(value = "Find All Addresses of client")
+	@GetMapping(value = "/{idClient}/endereco")
+	public ResponseEntity<List<Address>> findAllAddress(@PathVariable Integer idClient) {
+
+		log.info("--> Starting / Create Address Controller");
+
+		List<Address> addresses = addressService.findAllByClientId(idClient);
+
+		log.info("--> Returning / Create Address Controller");
+
+		return ResponseEntity.ok().body(addresses);
+	}
+	
+	@ApiOperation(value = "Delete Address by Id")
+	@DeleteMapping(value = "/endereco/{id}")
+	public ResponseEntity<String> deleteAddress(@PathVariable Integer id) {
+		
+		addressService.delete(id);
+		
+		return ResponseEntity.ok(gson.toJson("Endereço Deletado"));
+	}
+	
+	@ApiOperation(value = "Update Address by Id")
+	@PutMapping(value = "/endereco/{id}")
+	public ResponseEntity<Address> updateAddress(@PathVariable Integer id, @Valid @RequestBody AddressResource addrReq) {
+		
+		Address addr = addressService.fromResourceUpdate(addrReq, id);
+		Address addrUpdated = addressService.update(id, addr);
+		
+		return ResponseEntity.ok().body(addrUpdated);
 	}
 	
 }

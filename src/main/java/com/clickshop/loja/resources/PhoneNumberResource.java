@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class phoneNumberResource {
+public class PhoneNumberResource {
 
 	
 	@Pattern(regexp = "[\\s]*[0-9]*[1-9]+", message="Formato do numero incorreto")
@@ -17,7 +17,7 @@ public class phoneNumberResource {
 	@NotEmpty(message="Novo número necessário")
 	private String newPhoneNumber;
 	
-	public phoneNumberResource(String newPhoneNumber) {
+	public PhoneNumberResource(String newPhoneNumber) {
 		this.newPhoneNumber = newPhoneNumber;
 	}
 	
