@@ -2,7 +2,6 @@ package com.clickshop.loja.entities;
 
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -16,21 +15,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name="id")
-public class Client extends Person{
+public class Enterprise extends Person{
 	private static final long serialVersionUID = 1L;
 	
-	@Column(unique=true, nullable=false)
-	private String instaUsername;
-
-	public Client(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	private String enterpriseName;
+	
+	public Enterprise(Integer id, String name, String enterpriseName, String email, Set<String> phoneNumbers, Set<Address> addresses) {
 		super(id, name, email, phoneNumbers, addresses);
-		this.instaUsername = instaUsername;
+		this.enterpriseName = enterpriseName;
 	}
-	
-
-	
-	
-	
-	
-	
 }

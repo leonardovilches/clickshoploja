@@ -21,10 +21,8 @@ import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
 import com.clickshop.loja.resources.AddressResource;
 import com.clickshop.loja.resources.ClientResource;
-import com.clickshop.loja.resources.PhoneNumberResource;
 import com.clickshop.loja.services.AddressService;
 import com.clickshop.loja.services.ClientService;
-import com.clickshop.loja.services.PhoneNumberService;
 import com.clickshop.loja.utils.Paginator;
 import com.google.gson.Gson;
 
@@ -45,9 +43,6 @@ public class ClientController {
 
 	@Autowired
 	private AddressService addressService;
-	
-	@Autowired
-	private PhoneNumberService phoneNumberService;
 	
 	@ApiOperation(value = "Create a New Client")
 	@PostMapping
@@ -136,36 +131,6 @@ public class ClientController {
 		return ResponseEntity.ok().body(cliUpdated);
 	}
 	
-	///Phone Number
-	
-	@ApiOperation(value = "Create Phone Number")
-	@PostMapping(value = "/{idClient}/telefones")
-	public ResponseEntity<Client> createPhoneNumber(@PathVariable Integer idClient, @Valid @RequestBody PhoneNumberResource phoneNumber) {
-		
-		Client cliUpdated = phoneNumberService.create(idClient, phoneNumber);
-		return ResponseEntity.ok().body(cliUpdated);
-		
-	}
-	
-	
-	@ApiOperation(value = "Update Phone Number by Number")
-	@PutMapping(value = "/{idClient}/telefones/{currentNumber}")
-	public ResponseEntity<Client> updatePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber, @Valid @RequestBody PhoneNumberResource phoneNumber) {
-		
-		Client cliUpdated = phoneNumberService.update(idClient, phoneNumber, currentNumber);
-		return ResponseEntity.ok().body(cliUpdated);
-		
-	}
-	
-	@ApiOperation(value = "Delete Phone Number by Number")
-	@DeleteMapping(value = "/{idClient}/telefones/{currentNumber}")
-	public ResponseEntity<String> deletePhoneNumber(@PathVariable Integer idClient, @PathVariable String currentNumber) {
-		
-		phoneNumberService.delete(idClient, currentNumber);
-		
-		return ResponseEntity.ok(gson.toJson("Numero Deletado"));
-	}
-	
 	///Address
 	
 	@ApiOperation(value = "Create a New Address")
@@ -175,7 +140,7 @@ public class ClientController {
 		log.info("--> Starting / Create Address Controller");
 
 		Client cli = clientService.findById(idClient);
-		Address addrEnt = addressService.fromResourceCreate(addrReq, cli);
+		Address addrEnt = addressService.fromResourceCreateClient(addrReq, cli);
 		addressService.create(addrEnt);
 
 		log.info("--> Returning / Create Address Controller");

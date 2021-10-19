@@ -15,22 +15,22 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ClientResource {
+public class EnterpriseResource {
 	
 	private Integer id;
 	private String name;
 	@NotEmpty(message = "Usuario deve ser Registrado")
-	private String instaUsername;
+	private String enterpriseName;
 	@Email(message = "Email Invalido")
 	private String email;
 	private Set<String> phoneNumbers;
 	private Set<Address> addresses;
 	
-	public ClientResource(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	public EnterpriseResource(Integer id, String name, String enterpriseName, String email, Set<String> phoneNumbers, Set<Address> addresses) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.instaUsername = instaUsername;
+		this.enterpriseName = enterpriseName;
 		this.email = email;
 		this.phoneNumbers = phoneNumbers;
 		this.addresses = addresses;

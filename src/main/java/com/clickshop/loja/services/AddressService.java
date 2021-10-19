@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
+import com.clickshop.loja.entities.Enterprise;
 import com.clickshop.loja.repositories.AddressRepository;
 import com.clickshop.loja.repositories.ClientRepository;
+import com.clickshop.loja.repositories.EnterpriseRepository;
 import com.clickshop.loja.resources.AddressResource;
 import com.clickshop.loja.services.exceptions.ObjectNotFoundException;
 
@@ -23,11 +25,14 @@ public class AddressService {
 	@Autowired
 	private ClientRepository clientRepository;
 	
+	@Autowired
+	private EnterpriseRepository enterpriseRepository;
+	
 	@Transactional
 	public Address create(Address addrObj) {
 		addrObj.setId(null);
 			
-		 List<Address> addresses = findAllByClientId(addrObj.getClient().getId());
+		 List<Address> addresses = findAllByClientId(addrObj.getPerson().getId());
 		 
 		 if(addresses.size() < 4) {
 			 return addressRepository.save(addrObj);
@@ -50,12 +55,17 @@ public class AddressService {
 		return clientRepository.findAllByClientId(id);
 	}
 	
+	public List<Address> findAllByEnterpriseId(Integer id) {
+		return enterpriseRepository.findAllByEnterpriseId(id);
+	}
 
+	@Transactional
 	public void delete(Integer id) {
 		findById(id);
 		addressRepository.deleteById(id);
 	}
 	
+	@Transactional
 	public Address update(Integer id, Address addrEnt) {
 		findById(id);
 		
@@ -64,10 +74,16 @@ public class AddressService {
 		
 	}
 
-	public Address fromResourceCreate(AddressResource addrResou, Client cli) {
+	public Address fromResourceCreateClient(AddressResource addrResou, Client cli) {
 		
 		return new Address(addrResou.getId(), addrResou.getCity(), addrResou.getDistrict(),
 				addrResou.getStreet(), addrResou.getComplement(), addrResou.getNumber(), cli);
+	}
+	
+	public Address fromResourceCreateEnterprise(AddressResource addrResou, Enterprise pri) {
+		
+		return new Address(addrResou.getId(), addrResou.getCity(), addrResou.getDistrict(),
+				addrResou.getStreet(), addrResou.getComplement(), addrResou.getNumber(), pri);
 	}
 	
 	public Address fromResourceUpdate(AddressResource addrResou, Integer id) {
@@ -75,7 +91,7 @@ public class AddressService {
 		Address addr = findById(id);
 		
 		return new Address(addrResou.getId(), addrResou.getCity(), addrResou.getDistrict(),
-				addrResou.getStreet(), addrResou.getComplement(), addrResou.getNumber(), addr.getClient());
+				addrResou.getStreet(), addrResou.getComplement(), addrResou.getNumber(), addr.getPerson());
 	}
 
 }

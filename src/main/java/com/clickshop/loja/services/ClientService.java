@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
+import com.clickshop.loja.entities.Enterprise;
 import com.clickshop.loja.repositories.ClientRepository;
+import com.clickshop.loja.repositories.EnterpriseRepository;
 import com.clickshop.loja.resources.ClientResource;
 import com.clickshop.loja.services.exceptions.ObjectAlreadyRegistered;
 import com.clickshop.loja.services.exceptions.ObjectNotFoundException;
@@ -26,6 +28,9 @@ public class ClientService {
 	private ClientRepository clientRepository;
 	
 	@Autowired
+	private EnterpriseRepository enterpriseRepository;
+	
+	@Autowired
 	private AddressService addressService;
 
 	@Transactional
@@ -33,13 +38,16 @@ public class ClientService {
 		cliObj.setId(null);
 		Optional<Client> cliEntInstaUser = clientRepository.findByInstaUsername(cliObj.getInstaUsername());
 		Optional<Client> cliEntEmail = clientRepository.findByEmail(cliObj.getEmail());
+		Optional<Enterprise> priEntEmail = enterpriseRepository.findByEmail(cliObj.getEmail());
 			if(cliEntInstaUser.isPresent()) {
 				throw new ObjectAlreadyRegistered("Usuário do Instagram já Registrado; Tipo: " + Client.class.getName());
 			}
-			else if(cliEntEmail.isPresent()) {
+			else if(cliEntEmail.isPresent() || priEntEmail.isPresent()) {
 				throw new ObjectAlreadyRegistered("Email já Registrado; Tipo: " + Client.class.getName());
 			}
-			
+			else if(cliObj.getPhoneNumbers().size() > 5) {
+				throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Client.class.getName());
+			}
 			
 			Client cli = clientRepository.save(cliObj);
 			
@@ -47,7 +55,7 @@ public class ClientService {
 				Set<Address> addresses = cli.getAddresses();
 				
 				for(Address i : addresses) { 
-					i.setClient(cli);
+					i.setPerson(cli);
 					addressService.create(i); 
 			  } 
 			}
@@ -77,23 +85,26 @@ public class ClientService {
 		return clientRepository.findAll(pageRequest);
 	}
 	
-
+	@Transactional
 	public void delete(Integer id) {
 		findById(id);
 		clientRepository.deleteById(id);
 	}
 	
+	@Transactional
 	public Client update(Client cliEnt) {
 		findById(cliEnt.getId());
+		if(cliEnt.getPhoneNumbers().size() > 5) {
+			throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Client.class.getName());
+		}
 			return clientRepository.save(cliEnt);
 		
 	}
 
 	public Client fromResource(ClientResource cliResou) {
 		
-		
 		return new Client(cliResou.getId(), cliResou.getName(), cliResou.getInstaUsername(), cliResou.getEmail(),
-				cliResou.getPhoneNumber(), cliResou.getAddresses());
+				cliResou.getPhoneNumbers(), cliResou.getAddresses());
 	}
 	
 	
