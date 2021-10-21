@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.clickshop.loja.services.exceptions.ObjectAlreadyRegistered;
 import com.clickshop.loja.services.exceptions.ObjectNotFoundException;
+import com.clickshop.loja.services.exceptions.ParseError;
 import com.clickshop.loja.services.exceptions.ValidationError;
 
 @ControllerAdvice
@@ -29,6 +30,14 @@ public class ControllerExceptionHandler {
 		
 		StandardError err = new StandardError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage(), System.currentTimeMillis());
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(err);
+	}
+	
+	@ExceptionHandler(ParseError.class)
+	public ResponseEntity<StandardError> parseError(ParseError e, HttpServletRequest request) {
+
+		StandardError err = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

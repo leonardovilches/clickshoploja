@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@EqualsAndHashCode(exclude = {"addresses", "phoneNumbers"})
+@EqualsAndHashCode(exclude = {"addresses", "phoneNumbers", "live"})
 @NoArgsConstructor
 @Inheritance(strategy=InheritanceType.JOINED)
 public class Person implements Serializable{
@@ -48,6 +48,9 @@ public class Person implements Serializable{
 	@OneToMany(mappedBy = "person")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Address> addresses = new ArrayList<>(); 
+	
+	@OneToMany(mappedBy = "person")
+	private List<Live> live = new ArrayList<>();
 
 	public Person(Integer id, String name, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super();
