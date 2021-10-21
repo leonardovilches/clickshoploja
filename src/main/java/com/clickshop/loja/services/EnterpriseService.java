@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
 import com.clickshop.loja.entities.Enterprise;
+import com.clickshop.loja.repositories.AddressRepository;
 import com.clickshop.loja.repositories.ClientRepository;
 import com.clickshop.loja.repositories.EnterpriseRepository;
 import com.clickshop.loja.resources.EnterpriseResource;
@@ -31,7 +32,7 @@ public class EnterpriseService {
 	private ClientRepository clientRepository;
 	
 	@Autowired
-	private AddressService addressService;
+	private AddressRepository addressRepository;
 
 	@Transactional
 	public Enterprise create(Enterprise priObj) {
@@ -44,18 +45,17 @@ public class EnterpriseService {
 			else if(priObj.getPhoneNumbers().size() > 5) {
 				throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Enterprise.class.getName());
 			}
+			else if(priObj.getAddresses().size() > 5) {
+				throw new ObjectAlreadyRegistered("Limite de Endereços Registrados; Tipo: " + Enterprise.class.getName());
+			}
 			
 			Enterprise pri = enterpriseRepository.save(priObj);
 			
-			if(!pri.getAddresses().isEmpty()) { 
-				Set<Address> addresses = pri.getAddresses();
-				
-				for(Address i : addresses) { 
-					i.setPerson(pri);
-					addressService.create(i); 
-			  } 
-			}
-			 
+			priObj.getAddresses().forEach((Address addr) -> {
+				addr.setId(null);
+				addr.setPerson(pri);
+				addressRepository.save(addr);
+			});
 			
 			return pri;
 
@@ -92,7 +92,42 @@ public class EnterpriseService {
 		if(priEnt.getPhoneNumbers().size() > 5) {
 			throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Enterprise.class.getName());
 		}
+		else if(priEnt.getAddresses().size() > 5) {
+			throw new ObjectAlreadyRegistered("Limite de Endereços Registrados; Tipo: " + Enterprise.class.getName());
+		}
+			
+			updateAddress(priEnt);
+		
 			return enterpriseRepository.save(priEnt);
+		
+	}
+	
+	public void updateAddress(Enterprise priEnt) {
+		
+		List<Address> addresses = enterpriseRepository.findAddressByEnterpriseId(priEnt.getId());
+		
+		List<Address> newAddresses = priEnt.getAddresses();
+		
+		addresses.forEach((Address addr) -> {
+			newAddresses.forEach((Address newAddr) -> {
+				if(addr.getId() == newAddr.getId()) {
+					newAddr.setPerson(priEnt);
+					addressRepository.save(newAddr);
+				}
+				else {
+					newAddr.setPerson(priEnt);
+					addressRepository.save(newAddr);
+				}
+			});
+		});
+		
+		addresses = enterpriseRepository.findAddressByEnterpriseId(priEnt.getId());
+		
+		addresses.forEach((Address addr) -> {
+			if(!newAddresses.contains(addr)) {
+				addressRepository.delete(addr);
+			}
+		});
 		
 	}
 

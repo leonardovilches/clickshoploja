@@ -1,10 +1,11 @@
 package com.clickshop.loja.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -46,9 +47,9 @@ public class Person implements Serializable{
 	
 	@OneToMany(mappedBy = "person")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<Address> addresses = new HashSet<>(); 
+	private List<Address> addresses = new ArrayList<>(); 
 
-	public Person(Integer id, String name, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	public Person(Integer id, String name, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super();
 		this.id = id;
 		this.name = name;

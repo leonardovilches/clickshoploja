@@ -1,5 +1,6 @@
 package com.clickshop.loja.entities;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ public class Enterprise extends Person{
 	
 	private String enterpriseName;
 	
-	public Enterprise(Integer id, String name, String enterpriseName, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	public Enterprise(Integer id, String name, String enterpriseName, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super(id, name, email, phoneNumbers, addresses);
 		this.enterpriseName = enterpriseName;
 	}

@@ -17,6 +17,6 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, Integer>
 	
 	Optional<Enterprise> findByEmail(String email);
 	
-	@Query("Select e.addresses from Client e where e.id = :id")
-	List<Address> findAllByEnterpriseId(@Param("id") Integer id);
+	@Query("Select e.addresses from Enterprise e where e.id = :id")
+	List<Address> findAddressByEnterpriseId(@Param("id") Integer id);
 }

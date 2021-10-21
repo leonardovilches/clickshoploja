@@ -1,6 +1,7 @@
 package com.clickshop.loja.resources;
 
 
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
@@ -24,9 +25,9 @@ public class ClientResource {
 	@Email(message = "Email Invalido")
 	private String email;
 	private Set<String> phoneNumbers;
-	private Set<Address> addresses;
+	private List<Address> addresses;
 	
-	public ClientResource(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	public ClientResource(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super();
 		this.id = id;
 		this.name = name;

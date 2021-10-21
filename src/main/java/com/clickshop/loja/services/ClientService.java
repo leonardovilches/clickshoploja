@@ -2,7 +2,6 @@ package com.clickshop.loja.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Client;
 import com.clickshop.loja.entities.Enterprise;
+import com.clickshop.loja.repositories.AddressRepository;
 import com.clickshop.loja.repositories.ClientRepository;
 import com.clickshop.loja.repositories.EnterpriseRepository;
 import com.clickshop.loja.resources.ClientResource;
@@ -31,7 +31,7 @@ public class ClientService {
 	private EnterpriseRepository enterpriseRepository;
 	
 	@Autowired
-	private AddressService addressService;
+	private AddressRepository addressRepository;
 
 	@Transactional
 	public Client create(Client cliObj) {
@@ -48,18 +48,17 @@ public class ClientService {
 			else if(cliObj.getPhoneNumbers().size() > 5) {
 				throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Client.class.getName());
 			}
+			else if(cliObj.getAddresses().size() > 5) {
+				throw new ObjectAlreadyRegistered("Limite de Endereços Registrados; Tipo: " + Client.class.getName());
+			}
 			
 			Client cli = clientRepository.save(cliObj);
 			
-			if(!cli.getAddresses().isEmpty()) { 
-				Set<Address> addresses = cli.getAddresses();
-				
-				for(Address i : addresses) { 
-					i.setPerson(cli);
-					addressService.create(i); 
-			  } 
-			}
-			 
+			cliObj.getAddresses().forEach((Address addr) -> {
+				addr.setId(null);
+				addr.setPerson(cli);
+				addressRepository.save(addr);
+			});
 			
 			return cli;
 
@@ -97,8 +96,43 @@ public class ClientService {
 		if(cliEnt.getPhoneNumbers().size() > 5) {
 			throw new ObjectAlreadyRegistered("Limite de Numeros Registrados; Tipo: " + Client.class.getName());
 		}
+		else if(cliEnt.getAddresses().size() > 5) {
+			throw new ObjectAlreadyRegistered("Limite de Endereços Registrados; Tipo: " + Client.class.getName());
+		}
+			
+			updateAddress(cliEnt);
+		
 			return clientRepository.save(cliEnt);
 		
+	}
+	
+	public void updateAddress(Client cliEnt) {
+		
+		List<Address> addresses = clientRepository.findAddressByClientId(cliEnt.getId());
+		
+		List<Address> newAddresses = cliEnt.getAddresses();
+		
+		addresses.forEach((Address addr) -> {
+			newAddresses.forEach((Address newAddr) -> {
+				if(addr.getId() == newAddr.getId()) {
+					newAddr.setPerson(cliEnt);
+					addressRepository.save(newAddr);
+				}
+				else {
+					newAddr.setPerson(cliEnt);
+					addressRepository.save(newAddr);
+				}
+			});
+		});
+		
+		addresses = clientRepository.findAddressByClientId(cliEnt.getId());
+		
+		addresses.forEach((Address addr) -> {
+			if(!newAddresses.contains(addr)) {
+				addressRepository.delete(addr);
+			}
+		});
+
 	}
 
 	public Client fromResource(ClientResource cliResou) {

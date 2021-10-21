@@ -17,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.clickshop.loja.entities.Address;
 import com.clickshop.loja.entities.Enterprise;
-import com.clickshop.loja.resources.AddressResource;
 import com.clickshop.loja.resources.EnterpriseResource;
-import com.clickshop.loja.services.AddressService;
 import com.clickshop.loja.services.EnterpriseService;
 import com.clickshop.loja.utils.Paginator;
 import com.google.gson.Gson;
@@ -40,9 +37,6 @@ public class EnterpriseController {
 	
 	@Autowired
 	private EnterpriseService enterpriseService;
-
-	@Autowired
-	private AddressService addressService;
 	
 	@ApiOperation(value = "Create a New Enterprise")
 	@PostMapping
@@ -129,55 +123,6 @@ public class EnterpriseController {
 		log.info("--> Returning / Update Enterprise Controller");
 		
 		return ResponseEntity.ok().body(priUpdated);
-	}
-	
-	///Address
-	
-	@ApiOperation(value = "Create a New Address")
-	@PostMapping(value = "/{idEnterprise}/endereco")
-	public ResponseEntity<Void> createAddress(@PathVariable Integer idEnterprise, @Valid @RequestBody AddressResource addrReq) {
-
-		log.info("--> Starting / Create Address Controller");
-
-		Enterprise pri = enterpriseService.findById(idEnterprise);
-		Address addrEnt = addressService.fromResourceCreateEnterprise(addrReq, pri);
-		addressService.create(addrEnt);
-
-		log.info("--> Returning / Create Address Controller");
-
-		return ResponseEntity.ok().build();
-	}
-	
-	@ApiOperation(value = "Find All Addresses of Enterprise")
-	@GetMapping(value = "/{idEnterprise}/endereco")
-	public ResponseEntity<List<Address>> findAllAddress(@PathVariable Integer idEnterprise) {
-
-		log.info("--> Starting / Create Address Controller");
-
-		List<Address> addresses = addressService.findAllByEnterpriseId(idEnterprise);
-
-		log.info("--> Returning / Create Address Controller");
-
-		return ResponseEntity.ok().body(addresses);
-	}
-	
-	@ApiOperation(value = "Delete Address by Id")
-	@DeleteMapping(value = "/endereco/{id}")
-	public ResponseEntity<String> deleteAddress(@PathVariable Integer id) {
-		
-		addressService.delete(id);
-		
-		return ResponseEntity.ok(gson.toJson("Endereço Deletado"));
-	}
-	
-	@ApiOperation(value = "Update Address by Id")
-	@PutMapping(value = "/endereco/{id}")
-	public ResponseEntity<Address> updateAddress(@PathVariable Integer id, @Valid @RequestBody AddressResource addrReq) {
-		
-		Address addr = addressService.fromResourceUpdate(addrReq, id);
-		Address addrUpdated = addressService.update(id, addr);
-		
-		return ResponseEntity.ok().body(addrUpdated);
 	}
 	
 }

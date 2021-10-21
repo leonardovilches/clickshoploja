@@ -1,5 +1,6 @@
 package com.clickshop.loja.entities;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ public class Client extends Person{
 	@Column(unique=true, nullable=false)
 	private String instaUsername;
 
-	public Client(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, Set<Address> addresses) {
+	public Client(Integer id, String name, String instaUsername, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super(id, name, email, phoneNumbers, addresses);
 		this.instaUsername = instaUsername;
 	}
