@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,10 @@ import com.clickshop.loja.utils.Paginator;
 public class UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder pe;
 	
 	@Transactional
 	public User create(User userObj) {
@@ -70,6 +74,6 @@ public class UserService {
 	public User fromResource(UserResource userResou) {
 		
 		return new User(userResou.getId(), userResou.getName(), userResou.getCpf(), 
-				userResou.getEmail(), userResou.getPhoneNumber(), userResou.getPassword());
+				userResou.getEmail(), userResou.getPhoneNumber(), pe.encode(userResou.getPassword()));
 	}
 }

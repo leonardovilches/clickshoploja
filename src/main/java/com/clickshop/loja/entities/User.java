@@ -39,7 +39,7 @@ public class User implements Serializable{
 	private String phoneNumber;
 	
 	@JsonIgnore
-	@Column(nullable=false)
+	@Column(nullable=false) 
 	private String password;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
