@@ -1,12 +1,9 @@
 package com.clickshop.loja.resources;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import com.clickshop.loja.entities.Person;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

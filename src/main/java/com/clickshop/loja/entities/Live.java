@@ -2,15 +2,9 @@ package com.clickshop.loja.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,8 +39,8 @@ public class Live implements Serializable {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "person_id")
-	private Person person;
+	@JoinColumn(name = "enterprise_id")
+	private Enterprise enterprise;
 	
 	private Integer liveStatus;
 	
@@ -54,14 +48,14 @@ public class Live implements Serializable {
 		liveStatus = 3;
 	}
 	
-	public Live(Integer id, Date date, double commission, double cardTax, double shippingTax, Person person) {
+	public Live(Integer id, Date date, double commission, double cardTax, double shippingTax, Enterprise enterprise) {
 		super();
 		this.id = id;
 		this.date = date;
 		this.commission = commission;
 		this.cardTax = cardTax;
 		this.shippingTax = shippingTax;
-		this.person = person;
+		this.enterprise = enterprise;
 		liveStatus = 3;
 	}
 	

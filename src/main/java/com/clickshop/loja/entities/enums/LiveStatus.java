@@ -2,9 +2,9 @@ package com.clickshop.loja.entities.enums;
 
 public enum LiveStatus {
 
-	CLOSED(1, "LIVE_CLOSED"),
-	OPENED(2, "LIVE_OPENED"),
-	PENDING(3, "LIVE_PENDING");
+	CLOSED(1, "CLOSED"),
+	OPENED(2, "OPENED"),
+	PENDING(3, "PENDING");
 
 	private Integer cod;
 	private String description;

@@ -7,13 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name="id")
@@ -27,11 +26,5 @@ public class Client extends Person{
 		super(id, name, email, phoneNumbers, addresses);
 		this.instaUsername = instaUsername;
 	}
-	
-
-	
-	
-	
-	
 	
 }
