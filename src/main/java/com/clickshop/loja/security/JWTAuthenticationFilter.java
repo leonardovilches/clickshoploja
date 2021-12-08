@@ -19,6 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.clickshop.loja.resources.CredentialResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
 	private AuthenticationManager authenticationManager;
@@ -35,12 +38,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
 
 		try {
+			log.info("JWTAuthenticationFilter START : attemptAuthentication()");
 			CredentialResource creds = new ObjectMapper()
 	                .readValue(req.getInputStream(), CredentialResource.class);
 	
 	        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(creds.getEmail(), creds.getPassword(), new ArrayList<>());
 	        
 	        Authentication auth = authenticationManager.authenticate(authToken);
+	        log.info("JWTAuthenticationFilter FINISH : attemptAuthentication()");
 	        return auth;
 		}
 		catch (IOException e) {
@@ -52,11 +57,23 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException, ServletException {
 		
+		log.info("JWTAuthenticationFilter START : successfulAuthentication()");
 		String username = ((UserSS) auth.getPrincipal()).getUsername();
-        String token = jwtUtil.generateToken(username);
-        res.addHeader("Authorization", "Token " + token);
+		int ID = ((UserSS) auth.getPrincipal()).getId();
+		
+		String token = jwtUtil.generateToken(username);
+		res.getWriter().append(jsonAccountBody(username, ID, token));
+		res.addHeader("Authorization", "Bearer " + token);
+		res.addHeader("access-control-expose-headers", "Authorization");
+		log.info("JWTAuthenticationFilter FINISH : successfulAuthentication()");
  
 	}
+	
+	private String jsonAccountBody(String email, int id, String token) {
+    	return	"{\"ID\": \"" + id + "\", "
+    			+ "\"Email\": \"" + email + "\", "
+    			+ "\"Token\": \"" + token + "\"}";
+    }
 	
 	private class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
 		 

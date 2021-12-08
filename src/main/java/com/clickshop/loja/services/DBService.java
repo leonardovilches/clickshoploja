@@ -82,7 +82,7 @@ public class DBService {
 		liveRepository.saveAll(Arrays.asList(live1, live2, live3));
 		
 		User user1 = new User(null, "Leonardo Vilches", "36367733809", "leovilches08@gmail.com", "17991531742", pe.encode("12345"));
-		User user2 = new User(null, "Leonardo Vilches", "36367733808", "denilsinho@gmail.com", "17992554111", pe.encode("12345"));
+		User user2 = new User(null, "Denilson Fontes", "36367733808", "denilsinho@gmail.com", "17992554111", pe.encode("12345"));
 		
 		userRepository.saveAll(Arrays.asList(user1, user2));
 		
