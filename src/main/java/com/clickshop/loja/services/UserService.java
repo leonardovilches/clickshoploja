@@ -66,14 +66,31 @@ public class UserService {
 	}
 	
 	public User update(User user) {
-		findById(user.getId());
-			return userRepository.save(user);
+		User newUser = findById(user.getId());
+		updateBasicData(user, newUser);
+		return userRepository.save(newUser);
 		
 	}
 
+	private void updateBasicData(User user, User newUser) {
+		if(user.getEmail() != null) {
+			newUser.setEmail(user.getEmail());
+		}
+		if(user.getName() != null) {
+			newUser.setName(user.getName());
+		}
+		if(user.getPhoneNumber() != null) {
+			newUser.setPhoneNumber(user.getPhoneNumber());
+		}
+	}
+
 	public User fromResource(UserResource userResou) {
-		
 		return new User(userResou.getId(), userResou.getName(), userResou.getCpf(), 
 				userResou.getEmail(), userResou.getPhoneNumber(), pe.encode(userResou.getPassword()));
+	}
+	
+	public User basicDataFromResource(UserResource userResou) {
+		return new User(userResou.getId(), userResou.getName(), null, 
+				userResou.getEmail(), userResou.getPhoneNumber(), null);
 	}
 }

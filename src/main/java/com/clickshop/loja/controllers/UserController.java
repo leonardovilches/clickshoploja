@@ -113,13 +113,13 @@ public class UserController {
 
 		log.info("--> Starting / Update User Controller");
 
-		userReq.setId(id);
-		User userEnt = userService.fromResource(userReq);
-		User userUpdated = userService.update(userEnt);
+		User userEnt = userService.basicDataFromResource(userReq);
+		userEnt.setId(id);
+		userEnt = userService.update(userEnt);
 
 		log.info("--> Returning / Update User Controller");
 
-		return ResponseEntity.ok().body(userUpdated);
+		return ResponseEntity.ok().body(userEnt);
 	}
 
 }
