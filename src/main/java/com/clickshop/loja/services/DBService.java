@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.clickshop.loja.entities.Address;
@@ -38,6 +39,9 @@ public class DBService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder pe;
 	
 	public void instatiateTestDatabase() {
 		
@@ -77,8 +81,8 @@ public class DBService {
 		
 		liveRepository.saveAll(Arrays.asList(live1, live2, live3));
 		
-		User user1 = new User(null, "Leonardo Vilches", "36367733809", "leovilches08@gmail.com", "17991531742", "12345");
-		User user2 = new User(null, "Leonardo Vilches", "36367733808", "denilsinho@gmail.com", "17992554111", "12345");
+		User user1 = new User(null, "Leonardo Vilches", "36367733809", "leovilches08@gmail.com", "17991531742", pe.encode("12345"));
+		User user2 = new User(null, "Leonardo Vilches", "36367733808", "denilsinho@gmail.com", "17992554111", pe.encode("12345"));
 		
 		userRepository.saveAll(Arrays.asList(user1, user2));
 		
@@ -95,7 +99,7 @@ public class DBService {
 		List<Address> listAdd3 = new ArrayList<Address>();
 		listAdd1.add(address3);
 		
-		Address addressEnt1 = new Address(null, "Rio Preto", "Centro", "Benjamin Constant", "AP", 74, ent1);
+		Address addressEnt1 = new Address(null, "Rio Preto", "Centro", "Benjamin Constant", "AP 74", 3438, ent1);
 		Address addressEnt2 = new Address(null, "Mirassol", "Jd. Rosangela", "Manoel Batista", "Casa", 54, ent2);
 		Address addressEnt3 = new Address(null, "Mirassolândia", "Centro", "Joao Batista", "Casa", 444, ent3);
 		
