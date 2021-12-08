@@ -59,21 +59,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		log.info("JWTAuthenticationFilter START : successfulAuthentication()");
 		String username = ((UserSS) auth.getPrincipal()).getUsername();
-		int ID = ((UserSS) auth.getPrincipal()).getId();
 		
 		String token = jwtUtil.generateToken(username);
-		res.getWriter().append(jsonAccountBody(username, ID, token));
 		res.addHeader("Authorization", "Bearer " + token);
 		res.addHeader("access-control-expose-headers", "Authorization");
 		log.info("JWTAuthenticationFilter FINISH : successfulAuthentication()");
  
 	}
 	
-	private String jsonAccountBody(String email, int id, String token) {
-    	return	"{\"ID\": \"" + id + "\", "
-    			+ "\"Email\": \"" + email + "\", "
-    			+ "\"Token\": \"" + token + "\"}";
-    }
 	
 	private class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
 		 
