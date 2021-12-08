@@ -6,8 +6,6 @@ import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.clickshop.loja.entities.Address;
 
@@ -20,9 +18,9 @@ public class ClientResource {
 	
 	private Integer id;
 	private String name;
-	@NotEmpty(message = "Usuario deve ser Registrado")
+	@NotEmpty(message = "Usuário do instagram deve ser Registrado")
 	private String instaUsername;
-	@Email(message = "Email Invalido")
+	@Email(message = "Email Inválido")
 	private String email;
 	private Set<String> phoneNumbers;
 	private List<Address> addresses;

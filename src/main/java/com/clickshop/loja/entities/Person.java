@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@EqualsAndHashCode(exclude = {"addresses", "phoneNumbers", "live"})
+@EqualsAndHashCode(exclude = {"addresses", "phoneNumbers"})
 @NoArgsConstructor
 @Inheritance(strategy=InheritanceType.JOINED)
 public class Person implements Serializable{
@@ -45,13 +46,10 @@ public class Person implements Serializable{
 	@CollectionTable(name="phoneNumber")
 	private Set<String> phoneNumbers = new HashSet<>();
 	
-	@OneToMany(mappedBy = "person")
+	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Address> addresses = new ArrayList<>(); 
 	
-	@OneToMany(mappedBy = "person")
-	private List<Live> live = new ArrayList<>();
-
 	public Person(Integer id, String name, String email, Set<String> phoneNumbers, List<Address> addresses) {
 		super();
 		this.id = id;
