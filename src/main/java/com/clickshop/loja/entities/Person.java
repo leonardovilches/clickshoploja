@@ -46,7 +46,7 @@ public class Person implements Serializable{
 	@CollectionTable(name="phoneNumber")
 	private Set<String> phoneNumbers = new HashSet<>();
 	
-	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "person")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Address> addresses = new ArrayList<>(); 
 	
